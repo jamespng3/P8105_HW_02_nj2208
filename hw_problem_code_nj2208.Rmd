@@ -4,14 +4,13 @@ author: "James Ng"
 date: "9/27/2019"
 output: html_document
 ---
-
-```{r include=FALSE}
-library(tidyverse)
+```{r setup, include=FALSE}
+library(tidyverse)  
 ```
 
 # Problem 1
 
-```{r message=FALSE,warning=FALSE}
+```{r trash wheel code chunk,message=FALSE,warning=FALSE}
 wheel_data=
   readxl::read_xlsx("./Trash-Wheel-Collection-Totals-8-6-19.xlsx",
            sheet="Mr. Trash Wheel",
@@ -25,7 +24,7 @@ wheel_data=
   )
 ```
 
-```{r message=FALSE,warning=FALSE}
+```{r precip code chunk,message=FALSE,warning=FALSE}
 precip_2017=
   readxl::read_excel("./Trash-Wheel-Collection-Totals-8-6-19.xlsx",
                      sheet = "2017 Precipitation",
@@ -66,14 +65,11 @@ precip_total=
 
 ### Problem 1 Discussion
 
-wheel_data has 344 observations and 14 variables while the final precipication dataframe had 24 observations of 3 variables. This makes sense for the precipitation data frame since the data is the monthly precipitation for 2 years.The dataset includes many interesting information such as the median number of sports balls in 2017 was `r median(pull(filter(wheel_data,year==2019),sports_balls))`and the total precipitation for 2018 was `r  sum(pull(filter(precip_total,year==2018),inches))`.
-
-Write a paragraph about these data; you are encouraged to use inline R. Be sure to note the number of observations in both resulting datasets, and give examples of key variables. For available data, what was the total precipitation in 2018? What was the median number of sports balls in a dumpster in 2017?
+wheel_data has 344 observations and 14 variables while the final precipitation dataframe has 24 observations of 3 variables. This makes sense for the precipitation data frame since the data is the monthly precipitation for 2 years.The dataset includes many interesting information such as the median number of sports balls in 2017 was `r median(pull(filter(wheel_data,year==2019),sports_balls))` balls and the total precipitation for 2018 was `r  sum(pull(filter(precip_total,year==2018),inches))` inches.
 
 # Problem 2
 
-pol-month data chunk
-```{r message=FALSE,warning=FALSE}
+```{r pol-month data chunk,message=FALSE,warning=FALSE}
 pols_df=
   read_csv("./pols-month.csv") %>% 
   separate(mon,into = c("year","month","day"),sep="-",remove = TRUE,extra = "warn") %>% 
@@ -104,8 +100,7 @@ mutate(
 select(-day,-prez_gop,-prez_dem) 
 ```
 
-snp data chunk
-```{r message=FALSE,warning=FALSE}
+```{r snp data chunk,message=FALSE,warning=FALSE}
 snp_df=
   read_csv("./snp.csv") %>% 
   separate(date,into = c("month","day","year"),sep="/",remove = TRUE,extra = "warn") %>% 
@@ -129,8 +124,7 @@ snp_df=
 select(year,month,everything(),-day) 
 ```
 
-unemployment data chunk
-```{r message=FALSE,warning=FALSE}
+```{r unemployment data chunk,message=FALSE,warning=FALSE}
 unemploy_df=
   read_csv("./unemployment.csv") %>% 
   janitor::clean_names()
@@ -240,9 +234,7 @@ unemploy_tidy=
   )
 ```
 
-binding 3 data frames
-
-```{r message=FALSE,warning=FALSE}
+```{r binding 3 data frames,message=FALSE,warning=FALSE}
 prob_2_df_a=
   left_join(pols_df,snp_df,by=c("year" = "year", "month" = "month")) %>%   
   janitor::clean_names() %>% 
@@ -255,9 +247,11 @@ prob_2_df_full=
 
 ### Problem 2 discussion
 
+The pols_df contained information regarding how many members of our senate, house and  president belonged to which party for the years in the datasets. I'm not actually sure what the snp is supposed to be. I assume it shows the value of the snp 500 as a gauge of the economy. The last data frame shows the unemployment rate. Using the key variables of year and month, the final dataset shows the political makeup of the country and the strength of the stock market in contrast to the unemployment rate of our county.
+
 ## Problem 3
 
-```{r}
+```{r baby names,message=FALSE,warning=FALSE}
 baby_names=
   read_csv("./Popular_Baby_Names.csv") %>%  
   janitor::clean_names() %>%
@@ -284,24 +278,20 @@ pop_male_names=baby_names %>%
   filter(rank=="1") %>% 
   select(year_of_birth,ethnicity,childs_first_name,rank) %>% 
   arrange(year_of_birth)
-  
+
+knitr::kable(olivia)  
+knitr::kable(pop_male_names)
 ```
 
-###Problem3Discussion
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+```{r graph of male names,message=FALSE,warning=FALSE}
+baby_names %>% 
+  filter(year_of_birth=="2016",ethnicity=="WHITE NON HISPANIC",gender=="MALE") %>% 
+  ggplot(aes(x=rank,y=count))+
+    geom_point(color="blue")+
+  labs(
+    title = "Frequncy of Popular Male Names in 2016 by Rank",
+    x = "Rank of Male Name",
+    y = "Number of Male New-borns with the Name",
+    caption = "Not sure how informative this graph really is."
+  )
+```
