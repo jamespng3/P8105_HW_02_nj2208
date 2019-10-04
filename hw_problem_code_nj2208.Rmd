@@ -1,0 +1,120 @@
+---
+title: "p8105_hw02"
+author: "James Ng"
+date: "9/27/2019"
+output: html_document
+---
+
+```{r echo=FALSE}
+library(tidyverse)
+```
+
+## Problem 1
+
+```{r}
+wheel_data=
+  readxl::read_xlsx("./Trash-Wheel-Collection-Totals-8-6-19.xlsx",
+           sheet="Mr. Trash Wheel",
+           skip = 1,
+           col_names = TRUE) %>% 
+  janitor::clean_names() %>% 
+  select(dumpster:homes_powered) %>% 
+  drop_na(dumpster) %>% 
+  mutate(
+    sports_balls = as.integer(sports_balls) 
+  )
+```
+
+```{r}
+precip_2017=
+  readxl::read_excel("./Trash-Wheel-Collection-Totals-8-6-19.xlsx",
+                     sheet = "2017 Precipitation",
+                     skip = 1,
+                     col_names = TRUE
+                     ) %>% 
+  janitor::clean_names() %>% 
+  drop_na(month) %>%
+  pivot_longer(
+    total,
+    names_to = "year",
+    values_to = "inches"
+  ) %>% 
+  mutate(
+    year = 2017,
+    month = month.name
+  )
+
+precip_2018=
+  readxl::read_excel("./Trash-Wheel-Collection-Totals-8-6-19.xlsx",
+                     sheet = "2018 Precipitation",
+                     skip = 1,
+                     col_names = TRUE
+                     ) %>% 
+  janitor::clean_names() %>% 
+  drop_na(month) %>%
+  pivot_longer(
+    total,
+    names_to = "year",
+    values_to = "inches"
+  ) %>% 
+  mutate(
+    year = 2018,
+    month = month.name
+  )
+
+precip_total=
+  bind_rows(precip_2017,precip_2018)
+  
+```
+
+wheel_data has 344 observations.
+
+
+## Problem 2
+
+```{r}
+pols_df=
+  read_csv("./pols-month.csv") %>% 
+  separate(mon,into = c("year","month","day"),sep="-",remove = TRUE,extra = "warn") %>% 
+  janitor::clean_names() %>% 
+  mutate(
+    month = case_when(
+      month == "01"  ~ "January",
+      month == "02"  ~ "February",
+      month == "03"  ~ "March",
+      month == "04"  ~ "April",
+      month == "05"  ~ "May",
+      month == "06"  ~ "June",
+      month == "07"  ~ "July",
+      month == "08"  ~ "August",
+      month == "09"  ~ "September",
+      month == "10"  ~ "October",
+      month == "11"  ~ "November",
+      month == "12"  ~ "December"
+    )
+  ) %>% 
+mutate(
+  president=prez_gop,
+  president=case_when(
+    president == "0"  ~ "dem",
+    president == "1"  ~ "gop",
+  )
+) %>% 
+select(-day,-prez_gop,-prez_dem) 
+```
+
+```{r}
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
