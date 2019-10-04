@@ -25,7 +25,7 @@ wheel_data=
   )
 ```
 
-```{r include=FALSE}
+```{r message=FALSE,warning=FALSE}
 precip_2017=
   readxl::read_excel("./Trash-Wheel-Collection-Totals-8-6-19.xlsx",
                      sheet = "2017 Precipitation",
@@ -66,13 +66,14 @@ precip_total=
 
 ### Problem 1 Discussion
 
-wheel_data has 344 observations.
+wheel_data has 344 observations and 14 variables while the final precipication dataframe had 24 observations of 3 variables. This makes sense for the precipitation data frame since the data is the monthly precipitation for 2 years.The dataset includes many interesting information such as the median number of sports balls in 2017 was `r median(pull(filter(wheel_data,year==2019),sports_balls))`and the total precipitation for 2018 was `r  sum(pull(filter(precip_total,year==2018),inches))`.
 
+Write a paragraph about these data; you are encouraged to use inline R. Be sure to note the number of observations in both resulting datasets, and give examples of key variables. For available data, what was the total precipitation in 2018? What was the median number of sports balls in a dumpster in 2017?
 
 # Problem 2
 
 pol-month data chunk
-```{r include=FALSE}
+```{r message=FALSE,warning=FALSE}
 pols_df=
   read_csv("./pols-month.csv") %>% 
   separate(mon,into = c("year","month","day"),sep="-",remove = TRUE,extra = "warn") %>% 
@@ -104,7 +105,7 @@ select(-day,-prez_gop,-prez_dem)
 ```
 
 snp data chunk
-```{r include=FALSE}
+```{r message=FALSE,warning=FALSE}
 snp_df=
   read_csv("./snp.csv") %>% 
   separate(date,into = c("month","day","year"),sep="/",remove = TRUE,extra = "warn") %>% 
@@ -129,7 +130,7 @@ select(year,month,everything(),-day)
 ```
 
 unemployment data chunk
-```{r include=FALSE}
+```{r message=FALSE,warning=FALSE}
 unemploy_df=
   read_csv("./unemployment.csv") %>% 
   janitor::clean_names()
@@ -241,7 +242,7 @@ unemploy_tidy=
 
 binding 3 data frames
 
-```{r include=FALSE}
+```{r message=FALSE,warning=FALSE}
 prob_2_df_a=
   left_join(pols_df,snp_df,by=c("year" = "year", "month" = "month")) %>%   
   janitor::clean_names() %>% 
@@ -257,10 +258,36 @@ prob_2_df_full=
 ## Problem 3
 
 ```{r}
+baby_names=
+  read_csv("./Popular_Baby_Names.csv") %>%  
+  janitor::clean_names() %>%
+  mutate(
+    ethnicity=case_when(
+      ethnicity=="ASIAN AND PACI"~"ASIAN AND PACIFIC ISLANDER",
+      ethnicity=="ASIAN AND PACIFIC ISLANDER"~"ASIAN AND PACIFIC ISLANDER",
+      ethnicity=="WHITE NON HISPANIC"~"WHITE NON HISPANIC",
+      ethnicity=="WHITE NON HISP"~"WHITE NON HISPANIC",
+      ethnicity=="BLACK NON HISPANIC"~"BLACK NON HISPANIC",
+      ethnicity=="BLACK NON HISP"~"BLACK NON HISPANIC",
+      ethnicity=="HISP"~"HISPANIC",
+      ethnicity=="HISPANIC"~"HISPANIC"
+    )
+  ) %>% 
+  distinct()
 
+olivia=baby_names %>%   
+  filter(childs_first_name=="Olivia") %>% 
+  select(year_of_birth,ethnicity,childs_first_name,rank) %>% 
+  arrange(year_of_birth)
+  
+pop_male_names=baby_names %>%   
+  filter(rank=="1") %>% 
+  select(year_of_birth,ethnicity,childs_first_name,rank) %>% 
+  arrange(year_of_birth)
+  
 ```
 
-
+###Problem3Discussion
 
 
 

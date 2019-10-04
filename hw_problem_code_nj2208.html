@@ -382,22 +382,258 @@ summary {
   mutate(
     sports_balls = as.integer(sports_balls) 
   )</code></pre>
+<pre class="r"><code>precip_2017=
+  readxl::read_excel(&quot;./Trash-Wheel-Collection-Totals-8-6-19.xlsx&quot;,
+                     sheet = &quot;2017 Precipitation&quot;,
+                     skip = 1,
+                     col_names = TRUE
+                     ) %&gt;% 
+  janitor::clean_names() %&gt;% 
+  drop_na(month) %&gt;%
+  pivot_longer(
+    total,
+    names_to = &quot;year&quot;,
+    values_to = &quot;inches&quot;
+  ) %&gt;% 
+  mutate(
+    year = 2017,
+    month = month.name
+  )
+precip_2018=
+  readxl::read_excel(&quot;./Trash-Wheel-Collection-Totals-8-6-19.xlsx&quot;,
+                     sheet = &quot;2018 Precipitation&quot;,
+                     skip = 1,
+                     col_names = TRUE
+                     ) %&gt;% 
+  janitor::clean_names() %&gt;% 
+  drop_na(month) %&gt;%
+  pivot_longer(
+    total,
+    names_to = &quot;year&quot;,
+    values_to = &quot;inches&quot;
+  ) %&gt;% 
+  mutate(
+    year = 2018,
+    month = month.name
+  )
+precip_total=
+  bind_rows(precip_2017,precip_2018)</code></pre>
 <div id="problem-1-discussion" class="section level3">
 <h3>Problem 1 Discussion</h3>
-<p>wheel_data has 344 observations.</p>
+<p>wheel_data has 344 observations and 14 variables while the final precipication dataframe had 24 observations of 3 variables. This makes sense for the precipitation data frame since the data is the monthly precipitation for 2 years.The dataset includes many interesting information such as the median number of sports balls in 2017 was 8.5and the total precipitation for 2018 was 70.33.</p>
+<p>Write a paragraph about these data; you are encouraged to use inline R. Be sure to note the number of observations in both resulting datasets, and give examples of key variables. For available data, what was the total precipitation in 2018? What was the median number of sports balls in a dumpster in 2017?</p>
 </div>
 </div>
 <div id="problem-2" class="section level1">
 <h1>Problem 2</h1>
 <p>pol-month data chunk</p>
+<pre class="r"><code>pols_df=
+  read_csv(&quot;./pols-month.csv&quot;) %&gt;% 
+  separate(mon,into = c(&quot;year&quot;,&quot;month&quot;,&quot;day&quot;),sep=&quot;-&quot;,remove = TRUE,extra = &quot;warn&quot;) %&gt;% 
+  janitor::clean_names() %&gt;% 
+  mutate(
+    month = case_when(
+      month == &quot;01&quot;  ~ &quot;January&quot;,
+      month == &quot;02&quot;  ~ &quot;February&quot;,
+      month == &quot;03&quot;  ~ &quot;March&quot;,
+      month == &quot;04&quot;  ~ &quot;April&quot;,
+      month == &quot;05&quot;  ~ &quot;May&quot;,
+      month == &quot;06&quot;  ~ &quot;June&quot;,
+      month == &quot;07&quot;  ~ &quot;July&quot;,
+      month == &quot;08&quot;  ~ &quot;August&quot;,
+      month == &quot;09&quot;  ~ &quot;September&quot;,
+      month == &quot;10&quot;  ~ &quot;October&quot;,
+      month == &quot;11&quot;  ~ &quot;November&quot;,
+      month == &quot;12&quot;  ~ &quot;December&quot;
+    )
+  ) %&gt;% 
+mutate(
+  president=prez_gop,
+  president=case_when(
+    president == &quot;0&quot;  ~ &quot;dem&quot;,
+    president == &quot;1&quot;  ~ &quot;gop&quot;,
+  )
+) %&gt;% 
+select(-day,-prez_gop,-prez_dem) </code></pre>
 <p>snp data chunk</p>
+<pre class="r"><code>snp_df=
+  read_csv(&quot;./snp.csv&quot;) %&gt;% 
+  separate(date,into = c(&quot;month&quot;,&quot;day&quot;,&quot;year&quot;),sep=&quot;/&quot;,remove = TRUE,extra = &quot;warn&quot;) %&gt;% 
+  janitor::clean_names() %&gt;% 
+  mutate(
+    month = case_when(
+      month == &quot;1&quot;  ~ &quot;January&quot;,
+      month == &quot;2&quot;  ~ &quot;February&quot;,
+      month == &quot;3&quot;  ~ &quot;March&quot;,
+      month == &quot;4&quot;  ~ &quot;April&quot;,
+      month == &quot;5&quot;  ~ &quot;May&quot;,
+      month == &quot;6&quot;  ~ &quot;June&quot;,
+      month == &quot;7&quot;  ~ &quot;July&quot;,
+      month == &quot;8&quot;  ~ &quot;August&quot;,
+      month == &quot;9&quot;  ~ &quot;September&quot;,
+      month == &quot;10&quot;  ~ &quot;October&quot;,
+      month == &quot;11&quot;  ~ &quot;November&quot;,
+      month == &quot;12&quot;  ~ &quot;December&quot;
+    )
+) %&gt;% 
+select(year,month,everything(),-day) </code></pre>
 <p>unemployment data chunk</p>
+<pre class="r"><code>unemploy_df=
+  read_csv(&quot;./unemployment.csv&quot;) %&gt;% 
+  janitor::clean_names()
+un_jan= unemploy_df %&gt;% 
+  select(year,jan) %&gt;% 
+  pivot_longer(
+    jan,
+    names_to = &quot;month&quot;,
+    values_to = &quot;unemployment_rate&quot;
+  ) 
+un_feb= unemploy_df %&gt;% 
+  select(year,feb) %&gt;% 
+  pivot_longer(
+    feb,
+    names_to = &quot;month&quot;,
+    values_to = &quot;unemployment_rate&quot;
+  ) 
+un_mar= unemploy_df %&gt;% 
+  select(year,mar) %&gt;% 
+  pivot_longer(
+    mar,
+    names_to = &quot;month&quot;,
+    values_to = &quot;unemployment_rate&quot;
+  ) 
+un_apr= unemploy_df %&gt;% 
+  select(year,apr) %&gt;% 
+  pivot_longer(
+    apr,
+    names_to = &quot;month&quot;,
+    values_to = &quot;unemployment_rate&quot;
+  ) 
+un_may= unemploy_df %&gt;% 
+  select(year,may) %&gt;% 
+  pivot_longer(
+    may,
+    names_to = &quot;month&quot;,
+    values_to = &quot;unemployment_rate&quot;
+  ) 
+un_jun= unemploy_df %&gt;% 
+  select(year,jun) %&gt;% 
+  pivot_longer(
+    jun,
+    names_to = &quot;month&quot;,
+    values_to = &quot;unemployment_rate&quot;
+  ) 
+un_jul= unemploy_df %&gt;% 
+  select(year,jul) %&gt;% 
+  pivot_longer(
+    jul,
+    names_to = &quot;month&quot;,
+    values_to = &quot;unemployment_rate&quot;
+  ) 
+un_aug= unemploy_df %&gt;% 
+  select(year,aug) %&gt;% 
+  pivot_longer(
+    aug,
+    names_to = &quot;month&quot;,
+    values_to = &quot;unemployment_rate&quot;
+  ) 
+un_sep= unemploy_df %&gt;% 
+  select(year,sep) %&gt;% 
+  pivot_longer(
+    sep,
+    names_to = &quot;month&quot;,
+    values_to = &quot;unemployment_rate&quot;
+  ) 
+un_oct= unemploy_df %&gt;% 
+  select(year,oct) %&gt;% 
+  pivot_longer(
+    oct,
+    names_to = &quot;month&quot;,
+    values_to = &quot;unemployment_rate&quot;
+  ) 
+un_nov= unemploy_df %&gt;% 
+  select(year,nov) %&gt;% 
+  pivot_longer(
+    nov,
+    names_to = &quot;month&quot;,
+    values_to = &quot;unemployment_rate&quot;
+  ) 
+un_dec= unemploy_df %&gt;% 
+  select(year,dec) %&gt;% 
+  pivot_longer(
+    dec,
+    names_to = &quot;month&quot;,
+    values_to = &quot;unemployment_rate&quot;
+  ) 
+unemploy_tidy=
+  bind_rows(un_jan,un_feb,un_mar,un_apr,un_may,un_jun,un_jul,un_aug,un_sep,un_oct,un_nov,un_dec) %&gt;% 
+  janitor::clean_names() %&gt;% 
+  mutate(
+    year=as.numeric(year),
+    month = case_when(
+      month == &quot;jan&quot;  ~ &quot;January&quot;,
+      month == &quot;feb&quot;  ~ &quot;February&quot;,
+      month == &quot;mar&quot;  ~ &quot;March&quot;,
+      month == &quot;apr&quot;  ~ &quot;April&quot;,
+      month == &quot;may&quot;  ~ &quot;May&quot;,
+      month == &quot;jun&quot;  ~ &quot;June&quot;,
+      month == &quot;jul&quot;  ~ &quot;July&quot;,
+      month == &quot;aug&quot;  ~ &quot;August&quot;,
+      month == &quot;sep&quot;  ~ &quot;September&quot;,
+      month == &quot;oct&quot;  ~ &quot;October&quot;,
+      month == &quot;nov&quot;  ~ &quot;November&quot;,
+      month == &quot;dec&quot;  ~ &quot;December&quot;
+    )
+  )</code></pre>
 <p>binding 3 data frames</p>
+<pre class="r"><code>prob_2_df_a=
+  left_join(pols_df,snp_df,by=c(&quot;year&quot; = &quot;year&quot;, &quot;month&quot; = &quot;month&quot;)) %&gt;%   
+  janitor::clean_names() %&gt;% 
+  mutate(
+    year=as.numeric(year)
+  )
+prob_2_df_full=  
+  left_join(prob_2_df_a,unemploy_tidy,by=c(&quot;year&quot; = &quot;year&quot;, &quot;month&quot; = &quot;month&quot;))</code></pre>
 <div id="problem-2-discussion" class="section level3">
 <h3>Problem 2 discussion</h3>
 </div>
 <div id="problem-3" class="section level2">
 <h2>Problem 3</h2>
+<pre class="r"><code>baby_names=
+  read_csv(&quot;./Popular_Baby_Names.csv&quot;) %&gt;%  
+  janitor::clean_names() %&gt;%
+  mutate(
+    ethnicity=case_when(
+      ethnicity==&quot;ASIAN AND PACI&quot;~&quot;ASIAN AND PACIFIC ISLANDER&quot;,
+      ethnicity==&quot;ASIAN AND PACIFIC ISLANDER&quot;~&quot;ASIAN AND PACIFIC ISLANDER&quot;,
+      ethnicity==&quot;WHITE NON HISPANIC&quot;~&quot;WHITE NON HISPANIC&quot;,
+      ethnicity==&quot;WHITE NON HISP&quot;~&quot;WHITE NON HISPANIC&quot;,
+      ethnicity==&quot;BLACK NON HISPANIC&quot;~&quot;BLACK NON HISPANIC&quot;,
+      ethnicity==&quot;BLACK NON HISP&quot;~&quot;BLACK NON HISPANIC&quot;,
+      ethnicity==&quot;HISP&quot;~&quot;HISPANIC&quot;,
+      ethnicity==&quot;HISPANIC&quot;~&quot;HISPANIC&quot;
+    )
+  ) %&gt;% 
+  distinct()</code></pre>
+<pre><code>## Parsed with column specification:
+## cols(
+##   `Year of Birth` = col_double(),
+##   Gender = col_character(),
+##   Ethnicity = col_character(),
+##   `Child&#39;s First Name` = col_character(),
+##   Count = col_double(),
+##   Rank = col_double()
+## )</code></pre>
+<pre class="r"><code>olivia=baby_names %&gt;%   
+  filter(childs_first_name==&quot;Olivia&quot;) %&gt;% 
+  select(year_of_birth,ethnicity,childs_first_name,rank) %&gt;% 
+  arrange(year_of_birth)
+  
+pop_male_names=baby_names %&gt;%   
+  filter(rank==&quot;1&quot;) %&gt;% 
+  select(year_of_birth,ethnicity,childs_first_name,rank) %&gt;% 
+  arrange(year_of_birth)</code></pre>
+<p>###Problem3Discussion</p>
 </div>
 </div>
 
