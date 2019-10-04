@@ -369,16 +369,8 @@ summary {
 </div>
 
 
-<pre><code>## -- Attaching packages --------------------------------------------- tidyverse 1.2.1 --</code></pre>
-<pre><code>## v ggplot2 3.2.1     v purrr   0.3.2
-## v tibble  2.1.3     v dplyr   0.8.3
-## v tidyr   1.0.0     v stringr 1.4.0
-## v readr   1.3.1     v forcats 0.4.0</code></pre>
-<pre><code>## -- Conflicts ------------------------------------------------ tidyverse_conflicts() --
-## x dplyr::filter() masks stats::filter()
-## x dplyr::lag()    masks stats::lag()</code></pre>
-<div id="problem-1" class="section level2">
-<h2>Problem 1</h2>
+<div id="problem-1" class="section level1">
+<h1>Problem 1</h1>
 <pre class="r"><code>wheel_data=
   readxl::read_xlsx(&quot;./Trash-Wheel-Collection-Totals-8-6-19.xlsx&quot;,
            sheet=&quot;Mr. Trash Wheel&quot;,
@@ -390,92 +382,23 @@ summary {
   mutate(
     sports_balls = as.integer(sports_balls) 
   )</code></pre>
-<pre><code>## New names:
-## * `` -&gt; ...15
-## * `` -&gt; ...16
-## * `` -&gt; ...17</code></pre>
-<pre class="r"><code>precip_2017=
-  readxl::read_excel(&quot;./Trash-Wheel-Collection-Totals-8-6-19.xlsx&quot;,
-                     sheet = &quot;2017 Precipitation&quot;,
-                     skip = 1,
-                     col_names = TRUE
-                     ) %&gt;% 
-  janitor::clean_names() %&gt;% 
-  drop_na(month) %&gt;%
-  pivot_longer(
-    total,
-    names_to = &quot;year&quot;,
-    values_to = &quot;inches&quot;
-  ) %&gt;% 
-  mutate(
-    year = 2017,
-    month = month.name
-  )
-
-precip_2018=
-  readxl::read_excel(&quot;./Trash-Wheel-Collection-Totals-8-6-19.xlsx&quot;,
-                     sheet = &quot;2018 Precipitation&quot;,
-                     skip = 1,
-                     col_names = TRUE
-                     ) %&gt;% 
-  janitor::clean_names() %&gt;% 
-  drop_na(month) %&gt;%
-  pivot_longer(
-    total,
-    names_to = &quot;year&quot;,
-    values_to = &quot;inches&quot;
-  ) %&gt;% 
-  mutate(
-    year = 2018,
-    month = month.name
-  )
-
-precip_total=
-  bind_rows(precip_2017,precip_2018)</code></pre>
+<div id="problem-1-discussion" class="section level3">
+<h3>Problem 1 Discussion</h3>
 <p>wheel_data has 344 observations.</p>
 </div>
-<div id="problem-2" class="section level2">
-<h2>Problem 2</h2>
-<pre class="r"><code>pols_df=
-  read_csv(&quot;./pols-month.csv&quot;) %&gt;% 
-  separate(mon,into = c(&quot;year&quot;,&quot;month&quot;,&quot;day&quot;),sep=&quot;-&quot;,remove = TRUE,extra = &quot;warn&quot;) %&gt;% 
-  janitor::clean_names() %&gt;% 
-  mutate(
-    month = case_when(
-      month == &quot;01&quot;  ~ &quot;January&quot;,
-      month == &quot;02&quot;  ~ &quot;February&quot;,
-      month == &quot;03&quot;  ~ &quot;March&quot;,
-      month == &quot;04&quot;  ~ &quot;April&quot;,
-      month == &quot;05&quot;  ~ &quot;May&quot;,
-      month == &quot;06&quot;  ~ &quot;June&quot;,
-      month == &quot;07&quot;  ~ &quot;July&quot;,
-      month == &quot;08&quot;  ~ &quot;August&quot;,
-      month == &quot;09&quot;  ~ &quot;September&quot;,
-      month == &quot;10&quot;  ~ &quot;October&quot;,
-      month == &quot;11&quot;  ~ &quot;November&quot;,
-      month == &quot;12&quot;  ~ &quot;December&quot;
-    )
-  ) %&gt;% 
-mutate(
-  president=prez_gop,
-  president=case_when(
-    president == &quot;0&quot;  ~ &quot;dem&quot;,
-    president == &quot;1&quot;  ~ &quot;gop&quot;,
-  )
-) %&gt;% 
-select(-day,-prez_gop,-prez_dem) </code></pre>
-<pre><code>## Parsed with column specification:
-## cols(
-##   mon = col_date(format = &quot;&quot;),
-##   prez_gop = col_double(),
-##   gov_gop = col_double(),
-##   sen_gop = col_double(),
-##   rep_gop = col_double(),
-##   prez_dem = col_double(),
-##   gov_dem = col_double(),
-##   sen_dem = col_double(),
-##   rep_dem = col_double()
-## )</code></pre>
+</div>
+<div id="problem-2" class="section level1">
+<h1>Problem 2</h1>
+<p>pol-month data chunk</p>
+<p>snp data chunk</p>
+<p>unemployment data chunk</p>
+<p>binding 3 data frames</p>
+<div id="problem-2-discussion" class="section level3">
+<h3>Problem 2 discussion</h3>
+</div>
+<div id="problem-3" class="section level2">
+<h2>Problem 3</h2>
+</div>
 </div>
 
 

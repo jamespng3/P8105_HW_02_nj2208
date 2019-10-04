@@ -5,13 +5,13 @@ date: "9/27/2019"
 output: html_document
 ---
 
-```{r echo=FALSE}
+```{r include=FALSE}
 library(tidyverse)
 ```
 
-## Problem 1
+# Problem 1
 
-```{r}
+```{r message=FALSE,warning=FALSE}
 wheel_data=
   readxl::read_xlsx("./Trash-Wheel-Collection-Totals-8-6-19.xlsx",
            sheet="Mr. Trash Wheel",
@@ -25,7 +25,7 @@ wheel_data=
   )
 ```
 
-```{r}
+```{r include=FALSE}
 precip_2017=
   readxl::read_excel("./Trash-Wheel-Collection-Totals-8-6-19.xlsx",
                      sheet = "2017 Precipitation",
@@ -43,7 +43,6 @@ precip_2017=
     year = 2017,
     month = month.name
   )
-
 precip_2018=
   readxl::read_excel("./Trash-Wheel-Collection-Totals-8-6-19.xlsx",
                      sheet = "2018 Precipitation",
@@ -61,18 +60,19 @@ precip_2018=
     year = 2018,
     month = month.name
   )
-
 precip_total=
   bind_rows(precip_2017,precip_2018)
-  
 ```
+
+### Problem 1 Discussion
 
 wheel_data has 344 observations.
 
 
-## Problem 2
+# Problem 2
 
-```{r}
+pol-month data chunk
+```{r include=FALSE}
 pols_df=
   read_csv("./pols-month.csv") %>% 
   separate(mon,into = c("year","month","day"),sep="-",remove = TRUE,extra = "warn") %>% 
@@ -103,9 +103,169 @@ mutate(
 select(-day,-prez_gop,-prez_dem) 
 ```
 
+snp data chunk
+```{r include=FALSE}
+snp_df=
+  read_csv("./snp.csv") %>% 
+  separate(date,into = c("month","day","year"),sep="/",remove = TRUE,extra = "warn") %>% 
+  janitor::clean_names() %>% 
+  mutate(
+    month = case_when(
+      month == "1"  ~ "January",
+      month == "2"  ~ "February",
+      month == "3"  ~ "March",
+      month == "4"  ~ "April",
+      month == "5"  ~ "May",
+      month == "6"  ~ "June",
+      month == "7"  ~ "July",
+      month == "8"  ~ "August",
+      month == "9"  ~ "September",
+      month == "10"  ~ "October",
+      month == "11"  ~ "November",
+      month == "12"  ~ "December"
+    )
+) %>% 
+select(year,month,everything(),-day) 
+```
+
+unemployment data chunk
+```{r include=FALSE}
+unemploy_df=
+  read_csv("./unemployment.csv") %>% 
+  janitor::clean_names()
+un_jan= unemploy_df %>% 
+  select(year,jan) %>% 
+  pivot_longer(
+    jan,
+    names_to = "month",
+    values_to = "unemployment_rate"
+  ) 
+un_feb= unemploy_df %>% 
+  select(year,feb) %>% 
+  pivot_longer(
+    feb,
+    names_to = "month",
+    values_to = "unemployment_rate"
+  ) 
+un_mar= unemploy_df %>% 
+  select(year,mar) %>% 
+  pivot_longer(
+    mar,
+    names_to = "month",
+    values_to = "unemployment_rate"
+  ) 
+un_apr= unemploy_df %>% 
+  select(year,apr) %>% 
+  pivot_longer(
+    apr,
+    names_to = "month",
+    values_to = "unemployment_rate"
+  ) 
+un_may= unemploy_df %>% 
+  select(year,may) %>% 
+  pivot_longer(
+    may,
+    names_to = "month",
+    values_to = "unemployment_rate"
+  ) 
+un_jun= unemploy_df %>% 
+  select(year,jun) %>% 
+  pivot_longer(
+    jun,
+    names_to = "month",
+    values_to = "unemployment_rate"
+  ) 
+un_jul= unemploy_df %>% 
+  select(year,jul) %>% 
+  pivot_longer(
+    jul,
+    names_to = "month",
+    values_to = "unemployment_rate"
+  ) 
+un_aug= unemploy_df %>% 
+  select(year,aug) %>% 
+  pivot_longer(
+    aug,
+    names_to = "month",
+    values_to = "unemployment_rate"
+  ) 
+un_sep= unemploy_df %>% 
+  select(year,sep) %>% 
+  pivot_longer(
+    sep,
+    names_to = "month",
+    values_to = "unemployment_rate"
+  ) 
+un_oct= unemploy_df %>% 
+  select(year,oct) %>% 
+  pivot_longer(
+    oct,
+    names_to = "month",
+    values_to = "unemployment_rate"
+  ) 
+un_nov= unemploy_df %>% 
+  select(year,nov) %>% 
+  pivot_longer(
+    nov,
+    names_to = "month",
+    values_to = "unemployment_rate"
+  ) 
+un_dec= unemploy_df %>% 
+  select(year,dec) %>% 
+  pivot_longer(
+    dec,
+    names_to = "month",
+    values_to = "unemployment_rate"
+  ) 
+unemploy_tidy=
+  bind_rows(un_jan,un_feb,un_mar,un_apr,un_may,un_jun,un_jul,un_aug,un_sep,un_oct,un_nov,un_dec) %>% 
+  janitor::clean_names() %>% 
+  mutate(
+    year=as.numeric(year),
+    month = case_when(
+      month == "jan"  ~ "January",
+      month == "feb"  ~ "February",
+      month == "mar"  ~ "March",
+      month == "apr"  ~ "April",
+      month == "may"  ~ "May",
+      month == "jun"  ~ "June",
+      month == "jul"  ~ "July",
+      month == "aug"  ~ "August",
+      month == "sep"  ~ "September",
+      month == "oct"  ~ "October",
+      month == "nov"  ~ "November",
+      month == "dec"  ~ "December"
+    )
+  )
+```
+
+binding 3 data frames
+
+```{r include=FALSE}
+prob_2_df_a=
+  left_join(pols_df,snp_df,by=c("year" = "year", "month" = "month")) %>%   
+  janitor::clean_names() %>% 
+  mutate(
+    year=as.numeric(year)
+  )
+prob_2_df_full=  
+  left_join(prob_2_df_a,unemploy_tidy,by=c("year" = "year", "month" = "month"))
+```
+
+### Problem 2 discussion
+
+## Problem 3
+
 ```{r}
 
 ```
+
+
+
+
+
+
+
 
 
 
